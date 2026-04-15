@@ -1,0 +1,136 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.3
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 1804ms
+ ○ Compiling / ...
+(node:7858) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ Compiled / in 2.6s (565 modules)
+ GET / 200 in 2872ms
+ ✓ Compiled in 236ms (268 modules)
+ ✓ Compiled /favicon.ico in 475ms (309 modules)
+ GET /favicon.ico 200 in 522ms
+(node:7858) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+ GET / 200 in 123ms
+ GET /favicon.ico 200 in 5ms
+ GET / 200 in 46ms
+ GET /favicon.ico 200 in 5ms
+ ✓ Compiled in 911ms (547 modules)
+ ✓ Compiled in 158ms (547 modules)
+ ✓ Compiled in 3.9s (2621 modules)
+ GET / 200 in 154ms
+ GET / 200 in 424ms
+ GET / 200 in 43ms
+ ✓ Compiled /favicon.ico in 299ms (1346 modules)
+ GET /favicon.ico 200 in 362ms
+ ✓ Compiled in 755ms (1305 modules)
+ ✓ Compiled in 1273ms (2630 modules)
+ ✓ Compiled in 896ms (2621 modules)
+ ⨯ ./src/app/globals.css:31:5
+Syntax error: /Users/satvikanand/Downloads/sepm/frontend/src/app/globals.css The `bg-iron` class does not exist. If `bg-iron` is a custom class, make sure it is defined within a `@layer` directive.
+
+  29 |   /* Angular, forged containers */
+  30 |   .runic-panel {
+> 31 |     @apply bg-iron border-2 border-iron transition-all relative;
+     |     ^
+  32 |     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  33 |   }
+ ⨯ ./src/app/globals.css:31:5
+Syntax error: /Users/satvikanand/Downloads/sepm/frontend/src/app/globals.css The `bg-iron` class does not exist. If `bg-iron` is a custom class, make sure it is defined within a `@layer` directive.
+
+  29 |   /* Angular, forged containers */
+  30 |   .runic-panel {
+> 31 |     @apply bg-iron border-2 border-iron transition-all relative;
+     |     ^
+  32 |     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  33 |   }
+ ⨯ ./src/app/globals.css:31:5
+Syntax error: /Users/satvikanand/Downloads/sepm/frontend/src/app/globals.css The `bg-iron` class does not exist. If `bg-iron` is a custom class, make sure it is defined within a `@layer` directive.
+
+  29 |   /* Angular, forged containers */
+  30 |   .runic-panel {
+> 31 |     @apply bg-iron border-2 border-iron transition-all relative;
+     |     ^
+  32 |     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  33 |   }
+ ⨯ ./src/app/globals.css:31:5
+Syntax error: /Users/satvikanand/Downloads/sepm/frontend/src/app/globals.css The `bg-iron` class does not exist. If `bg-iron` is a custom class, make sure it is defined within a `@layer` directive.
+
+  29 |   /* Angular, forged containers */
+  30 |   .runic-panel {
+> 31 |     @apply bg-iron border-2 border-iron transition-all relative;
+     |     ^
+  32 |     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  33 |   }
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|/Users/satvikanand/Downloads/sepm/frontend/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[2]!/Users/satvikanand/Downloads/sepm/frontend/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[3]!/Users/satvikanand/Downloads/sepm/frontend/src/app/globals.css': No serializer registered for PostCSSSyntaxError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> PostCSSSyntaxError
+ ○ Compiling /_error ...
+ ⨯ ./src/app/globals.css:31:5
+Syntax error: /Users/satvikanand/Downloads/sepm/frontend/src/app/globals.css The `bg-iron` class does not exist. If `bg-iron` is a custom class, make sure it is defined within a `@layer` directive.
+
+  29 |   /* Angular, forged containers */
+  30 |   .runic-panel {
+> 31 |     @apply bg-iron border-2 border-iron transition-all relative;
+     |     ^
+  32 |     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  33 |   }
+ GET / 500 in 2908ms
+ GET / 500 in 27ms
+ ✓ Compiled /favicon.ico in 990ms (1384 modules)
+ GET /favicon.ico 500 in 1179ms
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|/Users/satvikanand/Downloads/sepm/frontend/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[2]!/Users/satvikanand/Downloads/sepm/frontend/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[3]!/Users/satvikanand/Downloads/sepm/frontend/src/app/globals.css': No serializer registered for PostCSSSyntaxError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> PostCSSSyntaxError
+ GET / 500 in 68ms
+ GET / 500 in 22ms
+ ○ Compiling /_not-found ...
+ ⨯ ./src/app/globals.css:31:5
+Syntax error: /Users/satvikanand/Downloads/sepm/frontend/src/app/globals.css The `bg-iron` class does not exist. If `bg-iron` is a custom class, make sure it is defined within a `@layer` directive.
+
+  29 |   /* Angular, forged containers */
+  30 |   .runic-panel {
+> 31 |     @apply bg-iron border-2 border-iron transition-all relative;
+     |     ^
+  32 |     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  33 |   }
+ GET /_next/static/chunks/fallback/webpack.js 500 in 627ms
+ GET /_next/static/chunks/fallback/react-refresh.js 500 in 629ms
+ GET /_next/static/chunks/fallback/main.js 500 in 628ms
+ GET /_next/static/chunks/fallback/pages/_app.js 500 in 626ms
+ GET /_next/static/chunks/fallback/pages/_error.js 500 in 627ms
+ ✓ Compiled /favicon.ico in 117ms (1385 modules)
+ GET /favicon.ico 500 in 139ms
+ GET / 500 in 29ms
+ GET /_next/static/chunks/fallback/webpack.js 500 in 22ms
+ GET /_next/static/chunks/fallback/main.js 500 in 30ms
+ GET /_next/static/chunks/fallback/react-refresh.js 500 in 28ms
+ GET /_next/static/chunks/fallback/pages/_app.js 500 in 31ms
+ GET /_next/static/chunks/fallback/pages/_error.js 500 in 26ms
+ GET /favicon.ico 500 in 4ms
+ GET / 500 in 76ms
+ GET /_next/static/chunks/fallback/main.js 500 in 58ms
+ GET /_next/static/chunks/fallback/webpack.js 500 in 52ms
+ GET /_next/static/chunks/fallback/react-refresh.js 500 in 51ms
+ GET /_next/static/chunks/fallback/pages/_app.js 500 in 49ms
+ GET /_next/static/chunks/fallback/pages/_error.js 500 in 48ms
+ GET /favicon.ico 500 in 6ms
+ GET / 500 in 24ms
+ GET /_next/static/chunks/fallback/webpack.js 500 in 21ms
+ GET /_next/static/chunks/fallback/react-refresh.js 500 in 21ms
+ GET /_next/static/chunks/fallback/main.js 500 in 18ms
+ GET /_next/static/chunks/fallback/pages/_app.js 500 in 17ms
+ GET /_next/static/chunks/fallback/pages/_error.js 500 in 16ms
+ GET /favicon.ico 500 in 3ms
+ GET / 500 in 17ms
+ GET /_next/static/chunks/fallback/webpack.js 500 in 17ms
+ GET /_next/static/chunks/fallback/main.js 500 in 16ms
+ GET /_next/static/chunks/fallback/react-refresh.js 500 in 16ms
+ GET /_next/static/chunks/fallback/pages/_app.js 500 in 6ms
+ GET /_next/static/chunks/fallback/pages/_error.js 500 in 7ms
+ GET /favicon.ico 500 in 3ms
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|/Users/satvikanand/Downloads/sepm/frontend/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[2]!/Users/satvikanand/Downloads/sepm/frontend/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[3]!/Users/satvikanand/Downloads/sepm/frontend/src/app/globals.css': No serializer registered for PostCSSSyntaxError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> PostCSSSyntaxError

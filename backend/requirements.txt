@@ -1,0 +1,23 @@
+fastapi
+uvicorn[standard]
+pydantic
+python-multipart
+httpx
+
+# Search
+duckduckgo-search
+
+# Scraping
+requests
+beautifulsoup4
+lxml
+
+# NLP
+scikit-learn
+numpy
+
+# Deduplication
+rapidfuzz
+
+# Utilities
+python-dotenv

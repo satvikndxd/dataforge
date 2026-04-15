@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --obsidian: #030305;
+  --iron: #1C1C21;
+  --iron-light: #2D2D35;
+  --ember: #FF2A2A;
+  --burnt: #FF6B00;
+  --frost: #4D9FFF;
+  --bone: #F5F5FA;
+}
+
+body {
+  color: var(--bone);
+  background-color: var(--obsidian);
+  min-height: 100vh;
+  /* Cinematic radial background */
+  background: radial-gradient(circle at 50% 30%, rgba(28, 28, 33, 0.8) 0%, rgba(3, 3, 5, 1) 70%),
+              url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+');
+  background-attachment: fixed;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Premium Glassmorphic Panels */
+  .runic-panel {
+    @apply bg-iron/40 backdrop-blur-xl border border-iron-light/50 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.6)];
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle border highlight for panels */
+  .runic-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(77, 159, 255, 0.3), transparent);
+  }
+
+  /* Inputs */
+  .runic-input {
+    @apply bg-obsidian/60 text-bone font-inter p-4 text-lg border border-iron-light/40 rounded-lg focus:outline-none transition-all placeholder:text-bone/30;
+  }
+
+  .runic-input:focus {
+    @apply border-frost shadow-[0_0_15px_rgba(77,159,255,0.2)] bg-iron/50;
+  }
+
+  /* Buttons */
+  .runic-btn {
+    @apply bg-gradient-to-r from-burnt/80 to-ember/80 text-bone font-bebas text-2xl tracking-[0.15em] py-4 px-8 
+           rounded-lg border border-ember/50 shadow-[0_4px_20px_rgba(255,42,42,0.3)] 
+           transition-all duration-300 relative overflow-hidden flex justify-center items-center;
+  }
+  
+  .runic-btn:hover {
+    @apply shadow-[0_0_30px_rgba(255,42,42,0.6)] border-ember brightness-110 -translate-y-[1px];
+  }
+
+  .runic-btn:active {
+    @apply scale-[0.98] shadow-[0_0_10px_rgba(255,42,42,0.4)] translate-y-[1px];
+  }
+}
+
