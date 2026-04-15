@@ -19,5 +19,8 @@ numpy
 # Deduplication
 rapidfuzz
 
+# Image Processing
+Pillow
+
 # Utilities
 python-dotenv
