@@ -8,6 +8,10 @@ import random
 import requests
 import speech_recognition as sr
 from pydub import AudioSegment
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from scipy.io import wavfile
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +23,35 @@ def fetch_audio_bytes(url: str) -> bytes:
         return resp.content
     except Exception as e:
         logger.error(f"Failed to fetch audio from {url}: {e}")
+        return b""
+
+def generate_spectrogram(audio_bytes: bytes, ext: str) -> bytes:
+    """Generate a spectrogram PNG from audio bytes."""
+    if not audio_bytes:
+        return b""
+    try:
+        audio_io = io.BytesIO(audio_bytes)
+        audio_segment = AudioSegment.from_file(audio_io, format=ext)
+        out_wav = io.BytesIO()
+        audio_segment.export(out_wav, format="wav")
+        out_wav.seek(0)
+        
+        sample_rate, data = wavfile.read(out_wav)
+        if len(data.shape) > 1:
+            data = data.mean(axis=1) # convert to mono
+            
+        plt.figure(figsize=(10, 4))
+        plt.specgram(data, Fs=sample_rate, cmap='viridis')
+        plt.axis('off')
+        
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
+        plt.close('all')
+        
+        buf.seek(0)
+        return buf.read()
+    except Exception as e:
+        logger.error(f"Failed to generate spectrogram: {e}")
         return b""
 
 def spectrogram_cnn_classify(audio_bytes: bytes) -> dict:
@@ -48,6 +81,8 @@ def perform_stt(audio_bytes: bytes, ext: str) -> str:
         
         # Convert to WAV for SpeechRecognition
         audio_segment = AudioSegment.from_file(audio_io, format=ext)
+        # Truncate to first 15 seconds to drastically speed up STT
+        audio_segment = audio_segment[:15000]
         out_wav = io.BytesIO()
         audio_segment.export(out_wav, format="wav")
         out_wav.seek(0)
@@ -77,7 +112,10 @@ def process_audio(url: str, context_transcript: str = "") -> dict:
     # Classification
     classification = spectrogram_cnn_classify(audio_bytes)
     
-    ext = "mp3" if ".mp3" in url.lower() else "wav"
+    ext = "mp3"
+    if ".mp3" in url.lower(): ext = "mp3"
+    elif ".wav" in url.lower(): ext = "wav"
+    elif ".ogg" in url.lower(): ext = "ogg"
     transcript = context_transcript
     
     # Speech-to-text

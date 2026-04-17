@@ -59,14 +59,15 @@ def search_topic(topic: str, num_results: int = 20, modality: str = "text") -> L
             title_a = div.find('a', class_='result__a')
             url_a = div.find('a', class_='result__url')
             
-            if not title_a or not url_a:
+            if not title_a:
                 continue
                 
             title = title_a.get_text(strip=True)
-            href = url_a.get('href', '')
+            # DDG markup changes frequently; title anchor is the most stable URL source.
+            href = title_a.get('href', '') or (url_a.get('href', '') if url_a else '')
             
             # DuckDuckGo sometimes wraps URLs in a tracking redirect
-            if href.startswith('//duckduckgo.com/l/?uddg='):
+            if href.startswith('//duckduckgo.com/l/?uddg=') or href.startswith('/l/?uddg=') or "duckduckgo.com/l/?uddg=" in href:
                 try:
                     actual_url = urllib.parse.unquote(href.split('uddg=')[1].split('&')[0])
                 except IndexError:

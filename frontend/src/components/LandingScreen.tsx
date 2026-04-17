@@ -7,7 +7,7 @@ interface Props {
 
 export default function LandingScreen({ onStart }: Props) {
   const [topic, setTopic] = useState("");
-  const [format, setFormat] = useState<"csv" | "json">("csv");
+  const [format, setFormat] = useState<"csv" | "json" | "zip">("csv");
   const [modality, setModality] = useState("text");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -70,11 +70,11 @@ export default function LandingScreen({ onStart }: Props) {
         </div>
 
         <form onSubmit={handleStart} className="runic-panel p-8 md:p-12 flex flex-col gap-8 mt-4 w-full text-left">
-          
+
           <div className="flex flex-col gap-3 relative">
             <label className="font-bebas text-bone/60 text-sm tracking-[0.2em] uppercase pl-1">Target Domain</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="e.g. Nordic Runology, Quantum Mechanics..."
               className="runic-input text-lg md:text-xl tracking-wider placeholder:text-bone/20 font-light"
               value={topic}
@@ -89,17 +89,24 @@ export default function LandingScreen({ onStart }: Props) {
             <div className="flex flex-col gap-3">
               <label className="font-bebas text-bone/60 text-sm tracking-[0.2em] uppercase pl-1">Data Architecture</label>
               <div className="relative">
-                <select 
-                   className="runic-input w-full appearance-none cursor-pointer text-bone/90 bg-obsidian/70"
-                   value={modality}
-                   onChange={(e) => setModality(e.target.value)}
-                   disabled={loading}
+                <select
+                  className="runic-input w-full appearance-none cursor-pointer text-bone/90 bg-obsidian/70"
+                  value={modality}
+                  onChange={(e) => {
+                    setModality(e.target.value);
+                    if (e.target.value === "image_cnn" || e.target.value === "audio") {
+                      setFormat("zip");
+                    } else if (format === "zip") {
+                      setFormat("csv");
+                    }
+                  }}
+                  disabled={loading}
                 >
-                   <option value="text">NLP Context Lexicon</option>
-                   <option value="image_cnn">Vision Index (CNN)</option>
-                   <option value="graph_gnn">Entity Constellation (GNN)</option>
-                   <option value="audio">Acoustic Resonance</option>
-                   <option value="network">Numerical Network Bridge</option>
+                  <option value="text">NLP Context Lexicon</option>
+                  <option value="image_cnn">Vision Index (CNN)</option>
+                  <option value="graph_gnn">Entity Constellation (GNN)</option>
+                  <option value="audio">Acoustic Resonance</option>
+                  <option value="network">Numerical Network Bridge</option>
                 </select>
                 {/* Custom dropdown arrow */}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
@@ -111,7 +118,7 @@ export default function LandingScreen({ onStart }: Props) {
             <div className="flex flex-col gap-3">
               <label className="font-bebas text-bone/60 text-sm tracking-[0.2em] uppercase pl-1">Matrix Format</label>
               <div className="flex gap-3">
-                <button 
+                <button
                   type="button"
                   className={`flex-1 py-4 font-bebas text-xl md:text-2xl tracking-[0.15em] rounded-lg border transition-all duration-300 ${format === "csv" ? "border-frost bg-frost/20 text-frost shadow-[0_0_15px_rgba(77,159,255,0.3)]" : "border-iron-light bg-obsidian/40 text-bone/50 hover:bg-iron/60"}`}
                   onClick={() => setFormat("csv")}
@@ -119,7 +126,7 @@ export default function LandingScreen({ onStart }: Props) {
                 >
                   CSV
                 </button>
-                <button 
+                <button
                   type="button"
                   className={`flex-1 py-4 font-bebas text-xl md:text-2xl tracking-[0.15em] rounded-lg border transition-all duration-300 ${format === "json" ? "border-frost bg-frost/20 text-frost shadow-[0_0_15px_rgba(77,159,255,0.3)]" : "border-iron-light bg-obsidian/40 text-bone/50 hover:bg-iron/60"}`}
                   onClick={() => setFormat("json")}
@@ -127,12 +134,22 @@ export default function LandingScreen({ onStart }: Props) {
                 >
                   JSON
                 </button>
+                {(modality === "image_cnn" || modality === "audio") && (
+                  <button
+                    type="button"
+                    className={`flex-1 py-4 font-bebas text-xl md:text-2xl tracking-[0.15em] rounded-lg border transition-all duration-300 ${format === "zip" ? "border-ember bg-ember/20 text-ember shadow-[0_0_15px_rgba(255,68,68,0.3)]" : "border-iron-light bg-obsidian/40 text-bone/50 hover:bg-iron/60"}`}
+                    onClick={() => setFormat("zip")}
+                    disabled={loading}
+                  >
+                    ZIP
+                  </button>
+                )}
               </div>
             </div>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="runic-btn mt-6 h-[72px] w-full"
             disabled={loading}
           >

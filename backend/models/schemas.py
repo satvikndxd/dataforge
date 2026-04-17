@@ -9,7 +9,7 @@ from datetime import datetime
 
 class ResearchRequest(BaseModel):
     topic: str = Field(..., min_length=2, max_length=500, description="Research topic to investigate")
-    format: Literal["csv", "json"] = Field(default="json", description="Output dataset format")
+    format: Literal["csv", "json", "zip"] = Field(default="json", description="Output dataset format")
     num_sources: int = Field(default=20, ge=10, le=50, description="Max number of sources to fetch")
     modality: Literal["text", "image_cnn", "audio", "graph_gnn", "network"] = "text"
 
@@ -77,3 +77,33 @@ class JobResult(BaseModel):
 class SourceSelectionRequest(BaseModel):
     job_id: str
     selected_urls: List[str]
+
+
+class DownloadSelectionRequest(BaseModel):
+    selected_ids: List[str]
+
+
+class ImageDownloadRequest(BaseModel):
+    """Configuration for preprocessed image ZIP download."""
+    selected_ids: Optional[List[str]] = None
+    target_size: List[int] = [224, 224]
+    quality: int = 95
+    output_format: str = "JPEG"
+    grayscale: bool = False
+    edge_enhance: bool = False
+    equalize: bool = False
+    annotation_format: Literal["csv", "json"] = "json"
+
+
+class AudioDownloadRequest(BaseModel):
+    """Configuration for audio ZIP download."""
+    selected_ids: Optional[List[str]] = None
+    export_format: Literal["raw", "spectrogram"] = "raw"
+    annotation_format: Literal["csv", "json"] = "json"
+
+
+class DatasetArchiveRequest(BaseModel):
+    """Configuration for unstructured textual ZIP download."""
+    selected_ids: Optional[List[str]] = None
+    annotation_format: Literal["csv", "json"] = "json"
+

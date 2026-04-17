@@ -61,7 +61,7 @@ def _extract_audio(soup, base_url) -> List[Dict[str, str]]:
     audio_items = []
     for audio in soup.find_all(["audio", "source", "a"]):
         src = audio.get("src") or audio.get("href")
-        if not src or not (src.endswith(".mp3") or src.endswith(".wav")):
+        if not src or not (src.split("?")[0].endswith(".mp3") or src.split("?")[0].endswith(".wav") or src.split("?")[0].endswith(".ogg")):
             continue
         full_url = urljoin(base_url, src)
         parent = audio.find_parent(["div", "p", "article"])

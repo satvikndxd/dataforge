@@ -2,15 +2,19 @@ import io
 import zipfile
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 from fastapi.responses import PlainTextResponse, Response
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from models.schemas import (
     ResearchRequest,
     JobStatus,
     JobResult,
     SourceSelectionRequest,
+    DownloadSelectionRequest,
+    ImageDownloadRequest,
+    AudioDownloadRequest,
+    DatasetArchiveRequest,
 )
 from db import store
 from core import research, scraper, nlp_filter, cleaner, deduplicator, dataset_gen
@@ -78,15 +82,22 @@ def continue_pipeline(job_id: str):
             store.update_job(job_id, stage="Dispatcher: Assigning Audio Processor", progress=65)
             
             processed_items = []
-            for url, item in raw_items:
+            def _process_audio_meta(url, item):
                 audio_url = item.get("audio_url")
                 if audio_url:
-                    meta = audio_processor.process_audio(audio_url, item.get("context_transcript", ""))
-                    processed_items.append(meta)
+                    return audio_processor.process_audio(audio_url, item.get("context_transcript", ""))
+                return None
+                
+            with ThreadPoolExecutor(max_workers=5) as executor:
+                futures = {executor.submit(_process_audio_meta, url, item): url for url, item in raw_items}
+                for future in as_completed(futures):
+                    meta = future.result()
+                    if meta:
+                        processed_items.append(meta)
                     
             store.update_job(job_id, stage="Audio Processor: Deep Speech-to-Text", progress=80)
             
-            # Using original NLP filter on the translated STT transcripts!
+            # Try NLP filter scoring, but do not drop items if STT is weak!
             texts_to_score = [(meta["audio_url"], meta["transcript"]) for meta in processed_items if meta["transcript"].strip()]
             scored = nlp_filter.score_paragraphs(texts_to_score, job["topic"])
             score_map = {u: s for u, t, s in scored} # list of (url, text, score)
@@ -94,8 +105,9 @@ def continue_pipeline(job_id: str):
             final_items = []
             for meta in processed_items:
                 score = score_map.get(meta["audio_url"])
-                if score is not None and score > 0.0:
-                    final_items.append((meta["audio_url"], meta, score))
+                # Fallback to 0.5 because the scraper matched the page conceptually!
+                final_score = score if (score is not None and score > 0.0) else 0.5
+                final_items.append((meta["audio_url"], meta, final_score))
         elif job["modality"] == "graph_gnn":
             from core import graph_processor
             store.update_job(job_id, stage="Dispatcher: Assigning Graph Processor", progress=70)
@@ -203,26 +215,284 @@ async def get_results(job_id: str):
 
 
 @router.get("/download/{job_id}")
-async def download_dataset(job_id: str):
+async def download_dataset(job_id: str, selected_ids: str = None):
+    """Download dataset. For images/audio, supports optional selected_ids query param (comma-separated)."""
+    return await _download_dataset(job_id, selected_ids.split(",") if selected_ids else None)
+
+
+@router.post("/download/{job_id}")
+async def download_dataset_selected(job_id: str, req: DownloadSelectionRequest):
+    """Download selected images/audio only."""
+    return await _download_dataset(job_id, req.selected_ids)
+
+
+@router.post("/download_images/{job_id}")
+async def download_images_zip(job_id: str, req: ImageDownloadRequest):
+    """
+    Download preprocessed images as a ZIP file with full control over preprocessing.
+    Accepts configuration for target resolution, quality, format, and augmentations.
+    """
     job = store.get_job(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
-        
+
     if job["status"] != "done":
         raise HTTPException(status_code=400, detail="Job not finished")
-        
-    records = job.get("records", [])
+
+    if job.get("modality") != "image_cnn":
+        raise HTTPException(status_code=400, detail="This endpoint is only for image modality jobs")
+
+    from core import image_processor
+
+    all_records = job.get("records", [])
+
+    # Filter by selected IDs if provided
+    if req.selected_ids:
+        selected_set = set(req.selected_ids)
+        records = [r for r in all_records if r.get("id") in selected_set]
+    else:
+        records = all_records
+
+    # Parse preprocessing config
+    target_size = tuple(req.target_size) if req.target_size else (224, 224)
+    quality = req.quality or 95
+    output_format = (req.output_format or "JPEG").upper()
+    grayscale = req.grayscale or False
+    edge_enhance = req.edge_enhance or False
+    equalize = req.equalize or False
+
+    ext = "jpg" if output_format == "JPEG" else "png"
+    filename_suffix = "_selected" if req.selected_ids else ""
+
+    zip_buffer = io.BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+        # Download and preprocess images concurrently
+        def fetch_and_process(idx, record):
+            url = record.get("image_url") or record.get("metadata", {}).get("image_url")
+            if not url:
+                return None
+            try:
+                r = requests.get(url, timeout=15)
+                r.raise_for_status()
+                processed = image_processor.resize_and_normalize(
+                    r.content,
+                    target_size=target_size,
+                    quality=quality,
+                    output_format=output_format,
+                    grayscale=grayscale,
+                    edge_enhance=edge_enhance,
+                    equalize=equalize,
+                )
+                return idx, processed, ext
+            except Exception:
+                return None
+
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = {executor.submit(fetch_and_process, i, rec): rec for i, rec in enumerate(records)}
+            for future in as_completed(futures):
+                res = future.result()
+                if res:
+                    idx, content_bytes, file_ext = res
+                    zip_file.writestr(f"images/image_{idx:04d}.{file_ext}", content_bytes)
+
+        # Write preprocessing manifest
+        preprocessing_info = image_processor.get_preprocessing_info(
+            target_size=target_size,
+            quality=quality,
+            output_format=output_format,
+            grayscale=grayscale,
+            edge_enhance=edge_enhance,
+            equalize=equalize,
+        )
+        import json
+        zip_file.writestr("preprocessing_config.json", json.dumps(preprocessing_info, indent=2))
+
+        # Add annotations
+        ann_fmt = req.annotation_format or "json"
+        if ann_fmt == "csv":
+            ann_content = dataset_gen.to_csv(records)
+            zip_file.writestr("annotations.csv", ann_content)
+        else:
+            ann_content = dataset_gen.to_json(records)
+            zip_file.writestr("annotations.json", ann_content)
+
+    return Response(
+        content=zip_buffer.getvalue(),
+        media_type="application/zip",
+        headers={"Content-Disposition": f"attachment; filename=dataforge_images_{job_id}{filename_suffix}.zip"}
+    )
+
+
+@router.post("/download_audio/{job_id}")
+async def download_audio_zip(job_id: str, req: AudioDownloadRequest):
+    """
+    Download audio as a ZIP file, with an option to get raw files or generated spectrograms.
+    """
+    job = store.get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    if job["status"] != "done":
+        raise HTTPException(status_code=400, detail="Job not finished")
+
+    if job.get("modality") != "audio":
+        raise HTTPException(status_code=400, detail="This endpoint is only for audio modality jobs")
+
+    from core import audio_processor
+
+    all_records = job.get("records", [])
+
+    if req.selected_ids:
+        selected_set = set(req.selected_ids)
+        records = [r for r in all_records if r.get("id") in selected_set]
+    else:
+        records = all_records
+
+    filename_suffix = "_selected" if req.selected_ids else ""
+    zip_buffer = io.BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+        def fetch_and_process(idx, record):
+            url = record.get("audio_url") or record.get("metadata", {}).get("audio_url")
+            if not url:
+                return None
+            try:
+                r = requests.get(url, timeout=15)
+                r.raise_for_status()
+                
+                ext = "mp3"
+                if ".wav" in url.lower(): ext = "wav"
+                elif ".ogg" in url.lower(): ext = "ogg"
+                
+                if req.export_format == "spectrogram":
+                    processed = audio_processor.generate_spectrogram(r.content, ext)
+                    if not processed:
+                        return None
+                    return idx, processed, "png"
+                else:
+                    return idx, r.content, ext
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).error(f"ZIP fetch failed for {url}: {e}")
+                return None
+
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = {executor.submit(fetch_and_process, i, rec): rec for i, rec in enumerate(records)}
+            for future in as_completed(futures):
+                res = future.result()
+                if res:
+                    idx, content_bytes, file_ext = res
+                    # Put in 'spectrograms' folder if format is spectrogram, else 'audio'
+                    folder = "spectrograms" if req.export_format == "spectrogram" else "audio"
+                    zip_file.writestr(f"{folder}/audio_{idx:04d}.{file_ext}", content_bytes)
+
+        # Add annotations
+        ann_fmt = req.annotation_format or "json"
+        if ann_fmt == "csv":
+            ann_content = dataset_gen.to_csv(records)
+            zip_file.writestr("annotations.csv", ann_content)
+        else:
+            ann_content = dataset_gen.to_json(records)
+            zip_file.writestr("annotations.json", ann_content)
+
+    prefix = "spectrograms" if req.export_format == "spectrogram" else "audio"
+    return Response(
+        content=zip_buffer.getvalue(),
+        media_type="application/zip",
+        headers={"Content-Disposition": f"attachment; filename=dataforge_{prefix}_{job_id}{filename_suffix}.zip"}
+    )
+
+
+@router.post("/download_archive/{job_id}")
+async def download_text_archive_zip(job_id: str, req: DatasetArchiveRequest):
+    """
+    Download non-multimedia records (text, graph) packed into a structured ZIP,
+    with individual plain text documents and a master configuration JSON/CSV.
+    """
+    job = store.get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    if job["status"] != "done":
+        raise HTTPException(status_code=400, detail="Job not finished")
+
+    modality = job.get("modality", "text")
+    if modality in ["image_cnn", "audio"]:
+        raise HTTPException(status_code=400, detail="This endpoint is only for textual/graph modalities")
+
+    all_records = job.get("records", [])
+
+    if req.selected_ids:
+        selected_set = set(req.selected_ids)
+        records = [r for r in all_records if r.get("id") in selected_set]
+    else:
+        records = all_records
+
+    filename_suffix = "_selected" if req.selected_ids else ""
+    zip_buffer = io.BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+        # Write each document individually
+        for idx, record in enumerate(records):
+            content_str = record.get("content")
+            if not content_str and record.get("type") == "graph_node":
+                content_str = json.dumps(record.get("metadata", {}), indent=2)
+            if not content_str:
+                content_str = "No content."
+                
+            file_name_doc = f"documents/doc_{idx:04d}.txt"
+            zip_file.writestr(file_name_doc, content_str.encode("utf-8"))
+
+        # Add annotations
+        ann_fmt = req.annotation_format or "json"
+        if ann_fmt == "csv":
+            ann_content = dataset_gen.to_csv(records)
+            zip_file.writestr("annotations.csv", ann_content)
+        else:
+            ann_content = dataset_gen.to_json(records)
+            zip_file.writestr("annotations.json", ann_content)
+
+    return Response(
+        content=zip_buffer.getvalue(),
+        media_type="application/zip",
+        headers={"Content-Disposition": f"attachment; filename=dataforge_dataset_{job_id}{filename_suffix}.zip"}
+    )
+
+
+
+
+async def _download_dataset(job_id: str, selected_ids: list = None):
+    job = store.get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    if job["status"] != "done":
+        raise HTTPException(status_code=400, detail="Job not finished")
+
+    all_records = job.get("records", [])
+    
+    # Filter by selected IDs if provided
+    if selected_ids:
+        selected_set = set(selected_ids)
+        records = [r for r in all_records if r.get("id") in selected_set]
+    else:
+        records = all_records
     fmt = job["format"]
     
     modality = job.get("modality")
     if modality in ["image_cnn", "audio"]:
         zip_buffer = io.BytesIO()
         folder_name = "images" if modality == "image_cnn" else "audio"
-        
+        filename_suffix = "_selected" if selected_ids else ""
+
         with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
             # Helper to fetch individual multimedia bundles
             def fetch_file(idx, record):
                 url = record.get("image_url") if modality == "image_cnn" else record.get("audio_url")
+                if not url:
+                    # Try metadata
+                    url = record.get("metadata", {}).get("image_url" if modality == "image_cnn" else "audio_url")
                 if not url:
                     return None
                 try:
@@ -260,7 +530,7 @@ async def download_dataset(job_id: str):
         return Response(
             content=zip_buffer.getvalue(),
             media_type="application/zip",
-            headers={"Content-Disposition": f"attachment; filename=dataforge_{job_id}.zip"}
+            headers={"Content-Disposition": f"attachment; filename=dataforge_{job_id}{filename_suffix}.zip"}
         )
 
     # Text / Graph / Network datasets

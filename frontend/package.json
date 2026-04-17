@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/swc-darwin-arm64": "^14.2.3",
+    "@next/swc-wasm-nodejs": "^16.2.3",
     "d3-force": "^3.0.0",
     "lucide-react": "^1.7.0",
     "next": "14.2.3",
