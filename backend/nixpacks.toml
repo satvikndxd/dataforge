@@ -1,8 +1,12 @@
 [phases.setup]
-nixPkgs = ["python311"]
+# ffmpeg is required by pydub / SpeechRecognition for audio decoding
+nixPkgs = ["python311", "ffmpeg"]
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
+cmds = [
+  "pip install -r requirements.txt",
+  "python -m spacy download en_core_web_sm"
+]
 
 [start]
 cmd = "uvicorn main:app --host 0.0.0.0 --port $PORT"

@@ -12,12 +12,24 @@ requests
 beautifulsoup4
 lxml
 
-# NLP
+# NLP / Text semantics
 scikit-learn
 numpy
+scipy
+spacy
+# NOTE: the spaCy model is downloaded during the build step
+#   python -m spacy download en_core_web_sm
 
-# Image processing
+# Knowledge graph
+networkx
+
+# Audio processing (requires the system "ffmpeg" binary)
+pydub
+SpeechRecognition
+
+# Image processing & spectrograms
 Pillow
+matplotlib
 
 # Deduplication
 rapidfuzz
