@@ -24,3 +24,8 @@ build/
 
 # Logs
 *.log
+
+# Test artifacts
+.coverage
+htmlcov/
+.pytest_cache/
