@@ -13,6 +13,22 @@ def test_openapi_schema_is_served(client):
     assert resp.json()["info"]["title"] == "DataForge API"
 
 
+def test_health_endpoint(client):
+    resp = client.get("/health")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["status"] == "healthy"
+    assert "version" in body
+
+
+def test_security_headers_present(client):
+    resp = client.get("/")
+    assert resp.headers.get("x-content-type-options") == "nosniff"
+    assert resp.headers.get("x-frame-options") == "DENY"
+    assert "referrer-policy" in resp.headers
+    assert "strict-transport-security" in resp.headers
+
+
 def test_cors_preflight_allows_configured_origin(client):
     """The default CORS config allows http://localhost:3000."""
     resp = client.options(

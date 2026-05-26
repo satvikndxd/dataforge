@@ -28,9 +28,28 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def add_security_headers(request, call_next):
+    """Apply a baseline set of hardening response headers to every response."""
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault(
+        "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
+    )
+    return response
+
+
 @app.get("/")
 def root():
     return {"message": "DataForge Backend is operational"}
+
+
+@app.get("/health")
+def health():
+    """Lightweight liveness probe (no external dependencies)."""
+    return {"status": "healthy", "version": app.version}
 
 
 app.include_router(router, prefix="/api")
