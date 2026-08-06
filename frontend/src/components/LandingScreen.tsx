@@ -34,63 +34,90 @@ export default function LandingScreen({ onStart }: Props) {
       const data = await res.json();
       onStart(data.job_id);
     } catch (err: any) {
-      setError(err.message || "Forge instability detected.");
+      setError(err.message || "Pipeline could not be started.");
       setLoading(false);
     }
   };
 
   return (
     <div className="w-full min-h-[90vh] flex items-center justify-center relative overflow-hidden">
-      {/* Background Ambience */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center mix-blend-screen opacity-40">
-        <div className="w-[800px] h-[800px] bg-frost/5 rounded-full blur-[120px]" />
-        <div className="absolute w-[400px] h-[400px] bg-ember/5 rounded-full blur-[80px] -translate-y-20" />
-      </div>
-
-      {/* Rotating Geo Rings */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.03]">
-        <div className="w-[600px] h-[600px] border-2 border-bone rounded-full animate-[spin_60s_linear_infinite]" />
-        <div className="absolute w-[800px] h-[800px] border border-bone rounded-full animate-[spin_120s_linear_reverse_infinite] border-dashed" />
+      {/* Bauhaus geometric composition — circle, square, triangle */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-burnt border-2 border-ink" />
+        <div className="absolute top-32 right-[-60px] w-56 h-56 bg-frost border-2 border-ink rotate-12" />
+        <div
+          className="absolute bottom-[-40px] left-[8%] w-0 h-0"
+          style={{
+            borderLeft: "110px solid transparent",
+            borderRight: "110px solid transparent",
+            borderBottom: "190px solid var(--bau-red)",
+          }}
+        />
+        {/* Grid lines */}
+        <div className="absolute top-0 bottom-0 left-1/4 w-[2px] bg-ink/10" />
+        <div className="absolute top-0 bottom-0 right-1/4 w-[2px] bg-ink/10" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center gap-10 max-w-3xl text-center w-full px-4">
-        {/* Core Emblem */}
-        <div className="w-16 h-16 rounded-xl border border-ember/40 bg-ember/10 flex items-center justify-center shadow-[0_0_30px_rgba(255,42,42,0.3)] mb-2 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-tr from-burnt/20 to-transparent" />
-          <div className="w-6 h-6 border-2 border-bone rotate-45 relative z-10" />
+        {/* Emblem: red circle / blue square / yellow triangle */}
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-full bg-ember border-2 border-ink" />
+          <div className="w-10 h-10 bg-frost border-2 border-ink" />
+          <div
+            className="w-0 h-0"
+            style={{
+              borderLeft: "20px solid transparent",
+              borderRight: "20px solid transparent",
+              borderBottom: "36px solid var(--bau-yellow)",
+            }}
+          />
         </div>
 
         <div className="space-y-4">
-          <h1 className="font-bebas text-6xl md:text-8xl tracking-[0.15em] text-transparent bg-clip-text bg-gradient-to-b from-bone to-bone/60 uppercase drop-shadow-2xl">
-            Forge Knowledge
+          <h1 className="font-display font-bold text-6xl md:text-8xl tracking-tight text-ink uppercase leading-[0.95]">
+            Data
+            <span className="text-ember">forge</span>
           </h1>
-          <p className="text-lg md:text-xl text-frost/90 font-inter tracking-[0.25em] font-light uppercase">
-            Initialize parameter extraction sequence
+          <p className="text-sm md:text-base text-ink font-display tracking-[0.35em] uppercase border-y-2 border-ink py-2 inline-block px-6 bg-surface">
+            Autonomous Dataset Curation
           </p>
         </div>
 
-        <form onSubmit={handleStart} className="runic-panel p-8 md:p-12 flex flex-col gap-8 mt-4 w-full text-left">
+        <form
+          onSubmit={handleStart}
+          className="runic-panel p-8 md:p-12 flex flex-col gap-8 mt-4 w-full text-left"
+        >
+          {/* Corner accent */}
+          <div className="absolute top-0 right-0 w-8 h-8 bg-burnt border-l-2 border-b-2 border-ink" aria-hidden="true" />
 
           <div className="flex flex-col gap-3 relative">
-            <label className="font-bebas text-bone/60 text-sm tracking-[0.2em] uppercase pl-1">Target Domain</label>
+            <label className="font-display font-bold text-ink text-xs tracking-[0.25em] uppercase">
+              01 — Target Domain
+            </label>
             <input
               type="text"
               placeholder="e.g. Nordic Runology, Quantum Mechanics..."
-              className="runic-input text-lg md:text-xl tracking-wider placeholder:text-bone/20 font-light"
+              className="runic-input text-lg md:text-xl"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               disabled={loading}
               autoComplete="off"
             />
-            {error && <span className="text-ember font-inter text-sm tracking-wide mt-1 pl-1">{error}</span>}
+            {error && (
+              <span className="text-paper bg-ember border-2 border-ink font-display text-xs uppercase tracking-[0.15em] mt-1 px-3 py-2 w-fit">
+                {error}
+              </span>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-3">
-              <label className="font-bebas text-bone/60 text-sm tracking-[0.2em] uppercase pl-1">Data Architecture</label>
+              <label className="font-display font-bold text-ink text-xs tracking-[0.25em] uppercase">
+                02 — Data Architecture
+              </label>
               <div className="relative">
                 <select
-                  className="runic-input w-full appearance-none cursor-pointer text-bone/90 bg-obsidian/70"
+                  className="runic-input w-full appearance-none cursor-pointer"
                   value={modality}
                   onChange={(e) => {
                     setModality(e.target.value);
@@ -109,18 +136,24 @@ export default function LandingScreen({ onStart }: Props) {
                   <option value="network">Numerical Network Bridge</option>
                 </select>
                 {/* Custom dropdown arrow */}
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-ink">
                   ▼
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col gap-3">
-              <label className="font-bebas text-bone/60 text-sm tracking-[0.2em] uppercase pl-1">Matrix Format</label>
+              <label className="font-display font-bold text-ink text-xs tracking-[0.25em] uppercase">
+                03 — Matrix Format
+              </label>
               <div className="flex gap-3">
                 <button
                   type="button"
-                  className={`flex-1 py-4 font-bebas text-xl md:text-2xl tracking-[0.15em] rounded-lg border transition-all duration-300 ${format === "csv" ? "border-frost bg-frost/20 text-frost shadow-[0_0_15px_rgba(77,159,255,0.3)]" : "border-iron-light bg-obsidian/40 text-bone/50 hover:bg-iron/60"}`}
+                  className={`bau-chip flex-1 py-4 text-lg font-bold ${
+                    format === "csv"
+                      ? "bg-frost text-paper shadow-[4px_4px_0_0_#141414]"
+                      : "text-steel hover:bg-paper"
+                  }`}
                   onClick={() => setFormat("csv")}
                   disabled={loading}
                 >
@@ -128,7 +161,11 @@ export default function LandingScreen({ onStart }: Props) {
                 </button>
                 <button
                   type="button"
-                  className={`flex-1 py-4 font-bebas text-xl md:text-2xl tracking-[0.15em] rounded-lg border transition-all duration-300 ${format === "json" ? "border-frost bg-frost/20 text-frost shadow-[0_0_15px_rgba(77,159,255,0.3)]" : "border-iron-light bg-obsidian/40 text-bone/50 hover:bg-iron/60"}`}
+                  className={`bau-chip flex-1 py-4 text-lg font-bold ${
+                    format === "json"
+                      ? "bg-frost text-paper shadow-[4px_4px_0_0_#141414]"
+                      : "text-steel hover:bg-paper"
+                  }`}
                   onClick={() => setFormat("json")}
                   disabled={loading}
                 >
@@ -137,7 +174,11 @@ export default function LandingScreen({ onStart }: Props) {
                 {(modality === "image_cnn" || modality === "audio") && (
                   <button
                     type="button"
-                    className={`flex-1 py-4 font-bebas text-xl md:text-2xl tracking-[0.15em] rounded-lg border transition-all duration-300 ${format === "zip" ? "border-ember bg-ember/20 text-ember shadow-[0_0_15px_rgba(255,68,68,0.3)]" : "border-iron-light bg-obsidian/40 text-bone/50 hover:bg-iron/60"}`}
+                    className={`bau-chip flex-1 py-4 text-lg font-bold ${
+                      format === "zip"
+                        ? "bg-ember text-paper shadow-[4px_4px_0_0_#141414]"
+                        : "text-steel hover:bg-paper"
+                    }`}
                     onClick={() => setFormat("zip")}
                     disabled={loading}
                   >
@@ -148,17 +189,13 @@ export default function LandingScreen({ onStart }: Props) {
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="runic-btn mt-6 h-[72px] w-full"
-            disabled={loading}
-          >
+          <button type="submit" className="runic-btn mt-6 h-[72px] w-full" disabled={loading}>
             {loading ? (
-              <span className="flex items-center gap-4 text-bone/90 text-[1.4rem]">
-                <Loader2 className="animate-spin" size={26} /> INITIATING SEQUENCE...
+              <span className="flex items-center gap-4">
+                <Loader2 className="animate-spin" size={26} /> Starting Pipeline...
               </span>
             ) : (
-              "COMMENCE EXTRACTION"
+              "Commence Extraction"
             )}
           </button>
         </form>

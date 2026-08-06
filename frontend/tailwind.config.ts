@@ -9,27 +9,38 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        obsidian: "#030305",
-        iron: "#1C1C21",
-        "iron-light": "#2D2D35",
-        ember: "#FF2A2A",
-        burnt: "#FF6B00",
-        frost: "#4D9FFF",
-        bone: "#F5F5FA",
+        // ── Classic Bauhaus palette ──
+        paper: "#F4F1EA",
+        surface: "#FFFFFF",
+        ink: "#141414",
+        steel: "#6E6A63",
+        line: "#D8D4CB",
+        // Legacy names remapped onto the Bauhaus palette so existing
+        // utility classes resolve to the new design system.
+        obsidian: "#F4F1EA", // page background (was near-black)
+        iron: "#6E6A63", // muted gray
+        "iron-light": "#D8D4CB", // hairline
+        ember: "#E02617", // Bauhaus red
+        burnt: "#F5A800", // Bauhaus yellow
+        frost: "#1E58E8", // Bauhaus blue
+        bone: "#141414", // ink text
       },
       fontFamily: {
-        bebas: ["var(--font-bebas)"],
+        display: ["var(--font-display)"],
         inter: ["var(--font-inter)"],
+        mono: ["var(--font-mono)"],
       },
       borderWidth: {
-        '2': '2px',
-        '3': '3px',
+        "2": "2px",
+        "3": "3px",
+        "4": "4px",
       },
       boxShadow: {
-        'runic-glow-ember': '0 0 15px 2px rgba(139, 0, 0, 0.4)',
-        'runic-glow-burnt': '0 0 15px 2px rgba(194, 65, 12, 0.4)',
-        'runic-glow-frost': '0 0 15px 2px rgba(59, 130, 246, 0.4)',
-      }
+        "bau-ink": "6px 6px 0 0 #141414",
+        "bau-red": "6px 6px 0 0 #E02617",
+        "bau-blue": "6px 6px 0 0 #1E58E8",
+        "bau-yellow": "6px 6px 0 0 #F5A800",
+      },
     },
   },
   plugins: [],

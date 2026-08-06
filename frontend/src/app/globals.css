@@ -2,69 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Classic Bauhaus Design Tokens ─────────────────────────────── */
 :root {
-  --obsidian: #030305;
-  --iron: #1C1C21;
-  --iron-light: #2D2D35;
-  --ember: #FF2A2A;
-  --burnt: #FF6B00;
-  --frost: #4D9FFF;
-  --bone: #F5F5FA;
+  --paper: #F4F1EA;        /* warm paper background */
+  --surface: #FFFFFF;      /* card surface */
+  --ink: #141414;          /* near-black ink */
+  --steel: #6E6A63;        /* muted warm gray */
+  --line: #D8D4CB;         /* hairline */
+  --bau-red: #E02617;      /* Bauhaus red */
+  --bau-blue: #1E58E8;     /* Bauhaus blue */
+  --bau-yellow: #F5A800;   /* Bauhaus yellow */
+
+  /* Legacy aliases (kept so older utility references keep working) */
+  --obsidian: var(--paper);
+  --iron: var(--steel);
+  --ember: var(--bau-red);
+  --burnt: var(--bau-yellow);
+  --frost: var(--bau-blue);
+  --bone: var(--ink);
 }
 
 body {
-  color: var(--bone);
-  background-color: var(--obsidian);
+  color: var(--ink);
+  background-color: var(--paper);
   min-height: 100vh;
-  /* Cinematic radial background */
-  background: radial-gradient(circle at 50% 30%, rgba(28, 28, 33, 0.8) 0%, rgba(3, 3, 5, 1) 70%),
-              url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+');
-  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--bau-yellow);
+  color: var(--ink);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-  
-  /* Premium Glassmorphic Panels */
+
+  /* ── Bauhaus Panel: flat white surface, hard black frame, offset shadow ── */
   .runic-panel {
-    @apply bg-iron/40 backdrop-blur-xl border border-iron-light/50 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.6)];
-    border-radius: 12px;
+    @apply bg-surface border-2 border-ink transition-all;
+    border-radius: 0;
+    box-shadow: 6px 6px 0 0 var(--ink);
     position: relative;
     overflow: hidden;
   }
 
-  /* Subtle border highlight for panels */
-  .runic-panel::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(77, 159, 255, 0.3), transparent);
-  }
-
-  /* Inputs */
+  /* ── Inputs: flat, geometric, high-contrast focus ── */
   .runic-input {
-    @apply bg-obsidian/60 text-bone font-inter p-4 text-lg border border-iron-light/40 rounded-lg focus:outline-none transition-all placeholder:text-bone/30;
+    @apply bg-surface text-ink font-inter p-4 text-lg border-2 border-ink focus:outline-none transition-all placeholder:text-steel/60;
+    border-radius: 0;
   }
 
   .runic-input:focus {
-    @apply border-frost shadow-[0_0_15px_rgba(77,159,255,0.2)] bg-iron/50;
+    border-color: var(--bau-blue);
+    box-shadow: 4px 4px 0 0 var(--bau-blue);
   }
 
-  /* Buttons */
+  /* ── Primary Button: solid red block, black frame, hard shadow ── */
   .runic-btn {
-    @apply bg-gradient-to-r from-burnt/80 to-ember/80 text-bone font-bebas text-2xl tracking-[0.15em] py-4 px-8 
-           rounded-lg border border-ember/50 shadow-[0_4px_20px_rgba(255,42,42,0.3)] 
-           transition-all duration-300 relative overflow-hidden flex justify-center items-center;
+    @apply bg-ember text-paper font-display font-bold text-xl uppercase tracking-[0.15em] py-4 px-8
+           border-2 border-ink transition-all duration-150 relative overflow-hidden flex justify-center items-center;
+    border-radius: 0;
+    box-shadow: 5px 5px 0 0 var(--ink);
   }
-  
+
   .runic-btn:hover {
-    @apply shadow-[0_0_30px_rgba(255,42,42,0.6)] border-ember brightness-110 -translate-y-[1px];
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 0 var(--ink);
   }
 
   .runic-btn:active {
-    @apply scale-[0.98] shadow-[0_0_10px_rgba(255,42,42,0.4)] translate-y-[1px];
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0 0 var(--ink);
+  }
+
+  .runic-btn:disabled {
+    @apply opacity-60 cursor-not-allowed;
+    transform: none;
+    box-shadow: 5px 5px 0 0 var(--ink);
+  }
+
+  /* ── Secondary flat chip / toggle base ── */
+  .bau-chip {
+    @apply bg-surface text-ink border-2 border-ink font-display uppercase tracking-[0.1em] transition-all duration-150;
+    border-radius: 0;
+  }
+
+  /* ── Section heading rule ── */
+  .bau-rule {
+    @apply border-b-4 border-ink;
   }
 }
-
