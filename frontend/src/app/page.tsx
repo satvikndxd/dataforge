@@ -11,7 +11,7 @@ export default function Home() {
   const [jobId, setJobId] = useState<string | null>(null);
 
   return (
-    <main className="min-h-screen bg-bg text-text p-6 lg:p-12 flex flex-col items-center">
+    <main className="min-h-screen bg-paper text-ink p-6 lg:p-12 flex flex-col items-center">
       {stage === "landing" && (
         <LandingScreen 
           onStart={(id: string) => {

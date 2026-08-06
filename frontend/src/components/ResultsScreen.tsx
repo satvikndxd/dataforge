@@ -430,25 +430,25 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
   if (loading || !data) {
     return (
       <div className="flex justify-center items-center flex-1">
-        <Activity className="animate-pulse text-accent-bronze" size={64} />
+        <Activity className="animate-pulse text-ember" size={64} />
       </div>
     );
   }
 
   return (
     <div className="w-full max-w-7xl flex flex-col gap-8 h-[90vh] mt-10">
-      <div className="flex justify-between items-end border-b-2 border-iron pb-4">
+      <div className="flex justify-between items-end bau-rule pb-4">
         <div>
-          <h2 className="font-bebas text-5xl uppercase tracking-[0.15em] text-bone drop-shadow-[2px_2px_0_var(--obsidian)]">
-            Forge Complete
+          <h2 className="font-display font-bold text-5xl uppercase tracking-tight text-ink">
+            Forge <span className="text-ember">Complete</span>
           </h2>
-          <p className="text-xl text-frost font-inter tracking-[0.2em] uppercase mt-2 opacity-80">
+          <p className="text-base text-paper bg-frost border-2 border-ink font-display font-bold tracking-[0.2em] uppercase mt-3 px-3 py-1 w-fit">
             Topic Alignment: {data.topic}
           </p>
         </div>
         <button
           onClick={onRestart}
-          className="text-iron hover:text-bone font-bebas text-lg tracking-[0.2em] uppercase border-b-2 border-transparent hover:border-frost transition-all flex items-center gap-2"
+          className="text-iron hover:text-bone font-display font-bold text-lg tracking-[0.2em] uppercase border-b-2 border-transparent hover:border-frost transition-all flex items-center gap-2"
         >
           <RefreshCw size={16} /> New Forge
         </button>
@@ -456,26 +456,26 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
 
       <div className="flex-1 flex flex-col md:flex-row gap-8 overflow-hidden relative">
         {/* Left: Content Preview or Graph */}
-        <div className="flex-[3] runic-panel flex flex-col overflow-hidden relative bg-obsidian/80 backdrop-blur-md">
+        <div className="flex-[3] runic-panel flex flex-col overflow-hidden relative bg-surface">
           <div className="p-4 border-b-2 border-iron flex items-center gap-3">
             {(data.modality === "graph_gnn" || data.modality === "image_cnn") ? <Network className="text-frost" /> : <Rows3 className="text-frost" />}
-            <span className="font-bebas uppercase text-2xl text-bone tracking-[0.2em]">
+            <span className="font-display uppercase text-2xl text-bone tracking-[0.2em]">
               {data.modality === "graph_gnn" ? "Knowledge Graph Topology" : (data.modality === "image_cnn" ? "Semantic Image Concepts" : "Data Stream (Top 50)")}
             </span>
           </div>
 
           <div className="p-6 flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4 relative">
             {(data.modality === "graph_gnn" || data.modality === "image_cnn") && graphData.nodes.length > 0 && (
-              <div className="w-full h-[350px] bg-[#08080A] rounded-[4px] border border-iron/30 overflow-hidden shrink-0 relative mb-4">
+              <div className="w-full h-[350px] bg-surface rounded-none border border-iron/30 overflow-hidden shrink-0 relative mb-4">
                 <div className="absolute top-2 left-2 z-10 flex gap-3 text-xs font-mono uppercase tracking-[0.2em]">
-                  {data.modality === "image_cnn" && <span className="bg-obsidian/80 px-2 py-1 text-bone border border-iron">Semantic Concept Map</span>}
+                  {data.modality === "image_cnn" && <span className="bg-surface px-2 py-1 text-bone border border-iron">Semantic Concept Map</span>}
                 </div>
                 <ForceGraph2D
                   graphData={graphData}
                   nodeAutoColorBy="group"
                   nodeRelSize={6}
-                  linkColor={() => "rgba(59, 130, 246, 0.4)"}
-                  backgroundColor="#08080A"
+                  linkColor={() => "rgba(30, 88, 232, 0.4)"}
+                  backgroundColor="#FFFFFF"
                   width={800}
                   height={350}
                 />
@@ -485,7 +485,7 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
             {data.modality === "graph_gnn" ? null : (
               <>
                 {data.modality === "image_cnn" && (
-                  <div className="flex items-center justify-between mb-4 sticky top-0 z-20 bg-obsidian/95 backdrop-blur-sm py-2 border-b border-iron">
+                  <div className="flex items-center justify-between mb-4 sticky top-0 z-20 bg-surface py-2 border-b border-iron">
                     <button
                       onClick={() => {
                         setIsSelectionMode(!isSelectionMode);
@@ -523,12 +523,12 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                         </button>
                       )}
                       {/* Glowing Accent Node */}
-                      <div className="absolute -left-[5px] top-0 w-2 h-2 bg-frost rounded-full shadow-runic-glow-frost" />
+                      <div className="absolute -left-[5px] top-0 w-2 h-2 bg-frost rounded-full" />
 
                       {/* Image Thumbnail for image_cnn modality */}
                       {data.modality === "image_cnn" && record.metadata?.image_url && (
                         <div
-                          className={`relative mb-3 rounded overflow-hidden border border-iron/40 bg-black/40 group cursor-pointer max-w-[280px] ${isSelectionMode ? 'hover:ring-2 hover:ring-frost/50' : ''}`}
+                          className={`relative mb-3 rounded overflow-hidden border border-iron/40 bg-paper group cursor-pointer max-w-[280px] ${isSelectionMode ? 'hover:ring-2 hover:ring-frost/50' : ''}`}
                           onClick={() => isSelectionMode && toggleImageSelection(recordId)}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -550,13 +550,13 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                             <span className="text-xs font-mono uppercase tracking-widest">Image unavailable</span>
                           </div>
                           {/* Hover overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-obsidian/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                          <div className="absolute inset-0 bg-paper opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                         </div>
                       )}
 
                       {data.modality === "audio" ? (
                         <div className="flex flex-col gap-3">
-                          <div className="flex items-center gap-4 bg-obsidian/40 border border-frost/20 p-3 rounded-sm">
+                          <div className="flex items-center gap-4 bg-surface border border-frost/20 p-3 rounded-sm">
                             {/* Mock Spectrogram visual */}
                             <div className="flex items-end gap-[2px] h-8 flex-1 opacity-70 overflow-hidden">
                               {Array.from({ length: 50 }).map((_, barIdx) => (
@@ -580,7 +580,7 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                               </span>
                             </div>
                           </div>
-                          <div className="bg-black/30 p-3 border-l-2 border-iron">
+                          <div className="bg-paper p-3 border-l-2 border-iron">
                             <span className="text-xs text-iron font-mono mb-1 block uppercase">STT Transcript Result:</span>
                             <p className="font-inter text-bone opacity-90 leading-relaxed text-sm italic">
                               &ldquo;{record.content || "Analysis incomplete or no speech decoded."}&rdquo;
@@ -595,9 +595,9 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
 
                       {data.modality === "image_cnn" && (record.tags?.length || record.entities?.length || record.category) && (
                         <div className="flex flex-wrap gap-2 mt-3">
-                          {record.category && <span className="text-[10px] uppercase font-bold tracking-widest text-bone bg-black/50 border border-transparent shadow-[inset_0_0_0_1px_var(--iron)] px-2 py-1">{record.category}</span>}
+                          {record.category && <span className="text-[10px] uppercase font-bold tracking-widest text-bone bg-paper border border-transparent px-2 py-1">{record.category}</span>}
                           {record.entities?.map((e: string, idx: number) => (
-                            <span key={`e-${idx}`} className="text-[10px] uppercase font-bold text-ember bg-ember/10 border border-ember/30 shadow-[0_0_4px_rgba(239,68,68,0.2)] px-2 py-1">{e}</span>
+                            <span key={`e-${idx}`} className="text-[10px] uppercase font-bold text-ember bg-ember/10 border border-ember/30 px-2 py-1">{e}</span>
                           ))}
                           {record.tags?.map((t: string, idx: number) => (
                             <span key={`t-${idx}`} className="text-[10px] uppercase font-mono text-frost bg-frost/10 border border-frost/30 px-2 py-1">#{t}</span>
@@ -626,31 +626,31 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
         {/* Right: Analytics & Export */}
         <div className="w-full md:w-96 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
           {/* Stats Panel */}
-          <div className="runic-panel p-8 flex flex-col gap-8 bg-obsidian/50 backdrop-blur-md shrink-0">
-            <h3 className="font-bebas text-3xl text-bone uppercase tracking-[0.15em] border-b-2 border-iron pb-4 flex items-center gap-3">
+          <div className="runic-panel p-8 flex flex-col gap-8 bg-surface shrink-0">
+            <h3 className="font-display font-bold text-3xl text-bone uppercase tracking-[0.15em] border-b-2 border-iron pb-4 flex items-center gap-3">
               <Database className="text-frost" />
               Refinement Stats
             </h3>
 
-            <div className="flex flex-col items-center justify-center gap-2 bg-black/40 py-6 border border-iron">
+            <div className="flex flex-col items-center justify-center gap-2 bg-paper py-6 border border-iron">
               {/* Minimal SVG Circle for Volume */}
               <div className="relative w-24 h-24 flex items-center justify-center">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle cx="48" cy="48" r="40" className="stroke-iron fill-transparent" strokeWidth="2" />
-                  <circle cx="48" cy="48" r="40" className="stroke-frost fill-transparent drop-shadow-[0_0_5px_rgba(59,130,246,0.8)]" strokeWidth="3" strokeDasharray="251" strokeDashoffset="50" />
+                  <circle cx="48" cy="48" r="40" className="stroke-frost fill-transparent drop-" strokeWidth="3" strokeDasharray="251" strokeDashoffset="50" />
                 </svg>
-                <span className="absolute font-bebas text-3xl text-bone">{data.total_records}</span>
+                <span className="absolute font-display font-bold text-3xl text-bone">{data.total_records}</span>
               </div>
-              <span className="font-bebas text-iron tracking-[0.2em] uppercase text-sm">Total Records Saved</span>
+              <span className="font-display font-bold text-iron tracking-[0.2em] uppercase text-sm">Total Records Saved</span>
             </div>
 
             <div className="flex justify-between items-center text-sm border-b border-iron pb-3 pt-4">
-              <span className="text-iron font-bebas tracking-[0.2em] uppercase">Sources Forged</span>
+              <span className="text-iron font-display tracking-[0.2em] uppercase">Sources Forged</span>
               <span className="font-mono font-bold text-bone text-xl">{data.sources_used}</span>
             </div>
 
             <div className="flex justify-between items-center text-sm border-b border-iron pb-3">
-              <span className="text-iron font-bebas tracking-[0.2em] uppercase">Matrix Format</span>
+              <span className="text-iron font-display tracking-[0.2em] uppercase">Matrix Format</span>
               <span className="font-mono font-bold text-frost uppercase tracking-widest bg-frost/10 px-2 py-1 border border-frost/30">
                 {data.format}
               </span>
@@ -663,18 +663,18 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
 
           {/* Image Preprocessing & ZIP Download Panel */}
           {data.modality === "image_cnn" && (
-            <div className="runic-panel bg-obsidian/50 backdrop-blur-md overflow-hidden shrink-0">
+            <div className="runic-panel bg-surface overflow-hidden shrink-0">
               {/* Panel Header */}
               <button
                 onClick={() => setShowPreprocessPanel(!showPreprocessPanel)}
                 className="w-full p-6 flex items-center justify-between hover:bg-frost/5 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-ember/30 to-frost/20 border border-ember/40 flex items-center justify-center shadow-[0_0_20px_rgba(255,42,42,0.15)]">
-                    <Package size={20} className="text-ember" />
+                  <div className="w-10 h-10 rounded-none bg-ember border-2 border-ink flex items-center justify-center">
+                    <Package size={20} className="text-paper" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-bebas text-2xl text-bone uppercase tracking-[0.15em]">
+                    <h3 className="font-display font-bold text-2xl text-bone uppercase tracking-[0.15em]">
                       Image ZIP Export
                     </h3>
                     <p className="text-[10px] font-mono uppercase tracking-widest text-iron mt-0.5">
@@ -699,8 +699,8 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                           onClick={() => setPreprocessConfig(prev => ({ ...prev, targetSize: preset.value }))}
                           className={`py-2.5 px-3 text-xs font-mono uppercase tracking-wider rounded border transition-all duration-200 ${
                             preprocessConfig.targetSize[0] === preset.value[0]
-                              ? "border-frost bg-frost/15 text-frost shadow-[0_0_12px_rgba(77,159,255,0.2)]"
-                              : "border-iron/40 bg-black/20 text-bone/50 hover:bg-iron/20 hover:text-bone/80"
+                              ? "border-frost bg-frost/15 text-frost"
+                              : "border-iron/40 bg-paper text-bone/50 hover:bg-iron/20 hover:text-bone/80"
                           }`}
                         >
                           {preset.label}
@@ -725,7 +725,7 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                       className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-iron/30
                         [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
                         [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-frost
-                        [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(77,159,255,0.5)]
+                        [&::-webkit-slider-thumb]:
                         [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-bone/30"
                     />
                   </div>
@@ -740,10 +740,10 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                         <button
                           key={fmt}
                           onClick={() => setPreprocessConfig(prev => ({ ...prev, outputFormat: fmt }))}
-                          className={`flex-1 py-2.5 text-sm font-bebas tracking-[0.15em] rounded border transition-all duration-200 ${
+                          className={`flex-1 py-2.5 text-sm font-display tracking-[0.15em] rounded border transition-all duration-200 ${
                             preprocessConfig.outputFormat === fmt
-                              ? "border-frost bg-frost/15 text-frost shadow-[0_0_12px_rgba(77,159,255,0.2)]"
-                              : "border-iron/40 bg-black/20 text-bone/50 hover:bg-iron/20"
+                              ? "border-frost bg-frost/15 text-frost"
+                              : "border-iron/40 bg-paper text-bone/50 hover:bg-iron/20"
                           }`}
                         >
                           {fmt}
@@ -768,8 +768,8 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                           onClick={() => setPreprocessConfig(prev => ({ ...prev, [aug.key]: !prev[aug.key] }))}
                           className={`flex items-center gap-3 py-2.5 px-3 rounded border text-left transition-all duration-200 ${
                             preprocessConfig[aug.key]
-                              ? "border-ember/40 bg-ember/10 shadow-[0_0_8px_rgba(255,42,42,0.1)]"
-                              : "border-iron/20 bg-black/10 hover:bg-iron/10"
+                              ? "border-ember/40 bg-ember/10"
+                              : "border-iron/20 bg-paper hover:bg-iron/10"
                           }`}
                         >
                           <div className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center transition-colors ${
@@ -800,10 +800,10 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                         <button
                           key={fmt}
                           onClick={() => setPreprocessConfig(prev => ({ ...prev, annotationFormat: fmt }))}
-                          className={`flex-1 py-2 text-sm font-bebas tracking-[0.15em] rounded border transition-all duration-200 ${
+                          className={`flex-1 py-2 text-sm font-display tracking-[0.15em] rounded border transition-all duration-200 ${
                             preprocessConfig.annotationFormat === fmt
                               ? "border-frost bg-frost/15 text-frost"
-                              : "border-iron/40 bg-black/20 text-bone/50 hover:bg-iron/20"
+                              : "border-iron/40 bg-paper text-bone/50 hover:bg-iron/20"
                           }`}
                         >
                           {fmt.toUpperCase()}
@@ -813,7 +813,7 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                   </div>
 
                   {/* Pipeline Preview */}
-                  <div className="bg-black/30 border border-iron/20 rounded p-3 flex flex-col gap-1.5">
+                  <div className="bg-paper border border-iron/20 rounded p-3 flex flex-col gap-1.5">
                     <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-iron mb-1">
                       Processing Pipeline Preview
                     </span>
@@ -843,15 +843,15 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                   <button
                     onClick={handleDownloadImagesZip}
                     disabled={downloadingZip}
-                    className="w-full py-4 font-bebas text-xl tracking-[0.15em] uppercase rounded-lg border transition-all duration-300
-                      border-ember bg-gradient-to-r from-ember/20 to-burnt/20 text-ember
-                      hover:from-ember/30 hover:to-burnt/30 hover:shadow-[0_0_25px_rgba(255,42,42,0.3)]
-                      disabled:opacity-50 disabled:cursor-not-allowed
+                    className="w-full py-4 font-display font-bold text-xl tracking-[0.15em] uppercase rounded-none border-2 border-ink transition-all duration-150
+                      bg-ember text-paper shadow-[4px_4px_0_0_#141414]
+                      hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_0_#141414]
+                      disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-x-0 disabled:translate-y-0
                       flex items-center justify-center gap-3"
                   >
                     {downloadingZip ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-ember/30 border-t-ember rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-paper/30 border-t-paper rounded-full animate-spin" />
                         Processing...
                       </>
                     ) : (
@@ -875,18 +875,18 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
 
           {/* Audio ZIP Download Panel */}
           {data.modality === "audio" && (
-            <div className="runic-panel bg-obsidian/50 backdrop-blur-md overflow-hidden shrink-0 mt-6">
+            <div className="runic-panel bg-surface overflow-hidden shrink-0 mt-6">
               {/* Panel Header */}
               <button
                 onClick={() => setShowAudioExportPanel(!showAudioExportPanel)}
                 className="w-full p-6 flex items-center justify-between hover:bg-frost/5 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-frost/30 to-iron/20 border border-frost/40 flex items-center justify-center shadow-[0_0_20px_rgba(77,159,255,0.15)]">
-                    <Package size={20} className="text-frost" />
+                  <div className="w-10 h-10 rounded-none bg-frost border-2 border-ink flex items-center justify-center">
+                    <Package size={20} className="text-paper" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-bebas text-2xl text-bone uppercase tracking-[0.15em]">
+                    <h3 className="font-display font-bold text-2xl text-bone uppercase tracking-[0.15em]">
                       Audio ZIP Export
                     </h3>
                     <p className="text-[10px] font-mono uppercase tracking-widest text-iron mt-0.5">
@@ -910,8 +910,8 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                         onClick={() => setAudioExportConfig(prev => ({ ...prev, exportFormat: "raw" }))}
                         className={`py-2.5 px-3 text-xs font-mono uppercase tracking-wider rounded border transition-all duration-200 ${
                           audioExportConfig.exportFormat === "raw"
-                            ? "border-frost bg-frost/15 text-frost shadow-[0_0_12px_rgba(77,159,255,0.2)]"
-                            : "border-iron/40 bg-black/20 text-bone/50 hover:bg-iron/20 hover:text-bone/80"
+                            ? "border-frost bg-frost/15 text-frost"
+                            : "border-iron/40 bg-paper text-bone/50 hover:bg-iron/20 hover:text-bone/80"
                         }`}
                       >
                         Raw Audio (MP3/WAV)
@@ -920,8 +920,8 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                         onClick={() => setAudioExportConfig(prev => ({ ...prev, exportFormat: "spectrogram" }))}
                         className={`py-2.5 px-3 text-xs font-mono uppercase tracking-wider rounded border transition-all duration-200 ${
                           audioExportConfig.exportFormat === "spectrogram"
-                            ? "border-ember bg-ember/15 text-ember shadow-[0_0_12px_rgba(255,68,68,0.2)]"
-                            : "border-iron/40 bg-black/20 text-bone/50 hover:bg-iron/20 hover:text-bone/80"
+                            ? "border-ember bg-ember/15 text-ember"
+                            : "border-iron/40 bg-paper text-bone/50 hover:bg-iron/20 hover:text-bone/80"
                         }`}
                       >
                         Spectrograms (PNG)
@@ -937,10 +937,10 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                         <button
                           key={fmt}
                           onClick={() => setAudioExportConfig(prev => ({ ...prev, annotationFormat: fmt }))}
-                          className={`flex-1 py-2 text-sm font-bebas tracking-[0.15em] rounded border transition-all duration-200 ${
+                          className={`flex-1 py-2 text-sm font-display tracking-[0.15em] rounded border transition-all duration-200 ${
                             audioExportConfig.annotationFormat === fmt
                               ? "border-frost bg-frost/15 text-frost"
-                              : "border-iron/40 bg-black/20 text-bone/50 hover:bg-iron/20"
+                              : "border-iron/40 bg-paper text-bone/50 hover:bg-iron/20"
                           }`}
                         >
                           {fmt.toUpperCase()}
@@ -960,14 +960,15 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                   <button
                     onClick={handleDownloadAudioZip}
                     disabled={downloadingZip}
-                    className={`w-full py-4 font-bebas text-xl tracking-[0.15em] uppercase rounded-lg border transition-all duration-300
-                      ${audioExportConfig.exportFormat === "spectrogram" ? "border-ember bg-gradient-to-r from-ember/20 to-burnt/20 text-ember hover:from-ember/30 hover:to-burnt/30 hover:shadow-[0_0_25px_rgba(255,42,42,0.3)]" : "border-frost bg-gradient-to-r from-frost/20 to-[#312E81]/20 text-frost hover:from-frost/30 hover:to-[#312E81]/30 hover:shadow-[0_0_25px_rgba(77,159,255,0.3)]"}
-                      disabled:opacity-50 disabled:cursor-not-allowed
+                    className={`w-full py-4 font-display font-bold text-xl tracking-[0.15em] uppercase rounded-none border-2 border-ink transition-all duration-150
+                      ${audioExportConfig.exportFormat === "spectrogram" ? "bg-ember text-paper" : "bg-frost text-paper"}
+                      shadow-[4px_4px_0_0_#141414] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_0_#141414]
+                      disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-x-0 disabled:translate-y-0
                       flex items-center justify-center gap-3`}
                   >
                     {downloadingZip ? (
                       <>
-                        <div className={`w-5 h-5 border-2 ${audioExportConfig.exportFormat === "spectrogram" ? "border-ember/30 border-t-ember" : "border-frost/30 border-t-frost"} rounded-full animate-spin`} />
+                        <div className="w-5 h-5 border-2 border-paper/30 border-t-paper rounded-full animate-spin" />
                         Processing...
                       </>
                     ) : (
@@ -989,18 +990,18 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
 
           {/* Dataset Archive Download Panel (Non-Multimedia) */}
           {data.modality !== "audio" && data.modality !== "image_cnn" && (
-            <div className="runic-panel bg-obsidian/50 backdrop-blur-md overflow-hidden shrink-0 mt-6">
+            <div className="runic-panel bg-surface overflow-hidden shrink-0 mt-6">
               {/* Panel Header */}
               <button
                 onClick={() => setShowTextExportPanel(!showTextExportPanel)}
                 className="w-full p-6 flex items-center justify-between hover:bg-frost/5 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500/30 to-emerald-900/20 border border-emerald-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.15)]">
-                    <Database size={20} className="text-emerald-400" />
+                  <div className="w-10 h-10 rounded-none bg-frost border-2 border-ink flex items-center justify-center">
+                    <Database size={20} className="text-paper" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-bebas text-2xl text-bone uppercase tracking-[0.15em]">
+                    <h3 className="font-display font-bold text-2xl text-bone uppercase tracking-[0.15em]">
                       Dataset ZIP Archive
                     </h3>
                     <p className="text-[10px] font-mono uppercase tracking-widest text-iron mt-0.5">
@@ -1022,10 +1023,10 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                         <button
                           key={fmt}
                           onClick={() => setTextExportFormat(fmt)}
-                          className={`flex-1 py-2 text-sm font-bebas tracking-[0.15em] rounded border transition-all duration-200 ${
+                          className={`flex-1 py-2 text-sm font-display tracking-[0.15em] rounded border transition-all duration-200 ${
                             textExportFormat === fmt
-                              ? "border-emerald-400 bg-emerald-400/15 text-emerald-400"
-                              : "border-iron/40 bg-black/20 text-bone/50 hover:bg-iron/20"
+                              ? "border-frost bg-frost/15 text-frost"
+                              : "border-iron/40 bg-paper text-bone/50 hover:bg-iron/20"
                           }`}
                         >
                           {fmt.toUpperCase()}
@@ -1045,15 +1046,15 @@ export default function ResultsScreen({ jobId, onRestart }: Props) {
                   <button
                     onClick={handleDownloadTextZip}
                     disabled={downloadingZip}
-                    className="w-full py-4 font-bebas text-xl tracking-[0.15em] uppercase rounded-lg border transition-all duration-300
-                      border-emerald-400 bg-gradient-to-r from-emerald-500/20 to-emerald-900/20 text-emerald-400
-                      hover:from-emerald-500/30 hover:to-emerald-900/30 hover:shadow-[0_0_25px_rgba(16,185,129,0.2)]
-                      disabled:opacity-50 disabled:cursor-not-allowed
+                    className="w-full py-4 font-display font-bold text-xl tracking-[0.15em] uppercase rounded-none border-2 border-ink transition-all duration-150
+                      bg-frost text-paper shadow-[4px_4px_0_0_#141414]
+                      hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_0_#141414]
+                      disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-x-0 disabled:translate-y-0
                       flex items-center justify-center gap-3"
                   >
                     {downloadingZip ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-emerald-400/30 border-t-emerald-400 rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-paper/30 border-t-paper rounded-full animate-spin" />
                         Processing...
                       </>
                     ) : (
