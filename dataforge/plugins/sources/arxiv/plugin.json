@@ -1,0 +1,15 @@
+{
+  "name": "dataforge-source-arxiv",
+  "version": "1.0.0",
+  "type": "source",
+  "description": "arXiv preprint search via the export API.",
+  "entrypoint": "backend.services.search:search_arxiv",
+  "permissions": ["network:arxiv.org", "storage:write"],
+  "capabilities": ["search", "fetch", "metadata"],
+  "config_schema": {
+    "type": "object",
+    "properties": {
+      "max_results": { "type": "integer", "default": 100 }
+    }
+  }
+}

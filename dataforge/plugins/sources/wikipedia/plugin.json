@@ -1,0 +1,16 @@
+{
+  "name": "dataforge-source-wikipedia",
+  "version": "1.0.0",
+  "type": "source",
+  "description": "Wikipedia search + article fetch via the MediaWiki API.",
+  "entrypoint": "backend.services.search:search_wikipedia",
+  "permissions": ["network:wikipedia.org", "storage:write"],
+  "capabilities": ["search", "fetch", "metadata"],
+  "config_schema": {
+    "type": "object",
+    "properties": {
+      "max_results": { "type": "integer", "default": 5 },
+      "language": { "type": "string", "default": "en" }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dataforge.dev/schemas/event-envelope.json",
+  "title": "DataForge Event Envelope",
+  "type": "object",
+  "required": ["event_id", "event_type", "schema_version", "timestamp", "payload"],
+  "properties": {
+    "event_id": { "type": "string", "pattern": "^evt_[0-9a-z]+$" },
+    "event_type": { "type": "string", "pattern": "^[a-z_]+(\\.[a-z_]+)+$" },
+    "schema_version": { "type": "string" },
+    "tenant_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "actor": { "type": "string", "description": "user:<id> | agent:<name> | system" },
+    "trace_id": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "payload": { "type": "object" }
+  },
+  "additionalProperties": false
+}

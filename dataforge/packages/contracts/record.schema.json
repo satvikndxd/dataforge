@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dataforge.dev/schemas/record.json",
+  "title": "DataForge Canonical Record",
+  "description": "Shape of every exported dataset record (spec 6.2 stage 5).",
+  "type": "object",
+  "required": ["record_id", "content"],
+  "properties": {
+    "record_id": { "type": "string", "pattern": "^chk_[0-9a-z]+$" },
+    "content": { "type": "string" },
+    "source_url": { "type": "string" },
+    "title": { "type": "string" },
+    "language": { "type": "string" },
+    "license_hint": { "type": "string" },
+    "quality_score": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "position": { "type": "integer", "minimum": 0 },
+    "document_id": { "type": "string" },
+    "metadata": { "type": "object" }
+  }
+}

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: dataforge
+description: DataForge V2 — autonomous multimodal dataset curation platform
+type: application
+version: 2.0.0
+appVersion: "2.0.0"
