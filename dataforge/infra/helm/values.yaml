@@ -1,0 +1,29 @@
+replicaCount:
+  api: 2
+  web: 2
+  worker: 2
+
+image:
+  api: ghcr.io/dataforge/api:2.0.0
+  web: ghcr.io/dataforge/web:2.0.0
+
+env:
+  DATAFORGE_DATABASE_URL: postgresql+psycopg://dataforge:changeme@postgres/dataforge
+  DATAFORGE_CELERY_BROKER_URL: redis://redis:6379/0
+  DATAFORGE_STORAGE_BACKEND: s3
+
+secrets:
+  secretKey: ""        # DATAFORGE_SECRET_KEY
+  anthropicApiKey: ""  # optional LLM provider
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: true
+  className: nginx
+  host: dataforge.example.com
+  tls: true
