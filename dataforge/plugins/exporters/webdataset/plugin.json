@@ -1,0 +1,15 @@
+{
+  "name": "dataforge-exporter-webdataset",
+  "version": "0.1.0",
+  "type": "exporter",
+  "description": "WebDataset tar-shard exporter for large-scale streaming training (reference manifest; implementation ships with the media worker pool).",
+  "entrypoint": "dataforge_webdataset.plugin:WebDatasetExporter",
+  "permissions": ["storage:read", "storage:write"],
+  "capabilities": ["export"],
+  "config_schema": {
+    "type": "object",
+    "properties": {
+      "shard_size_mb": { "type": "integer", "default": 512 }
+    }
+  }
+}

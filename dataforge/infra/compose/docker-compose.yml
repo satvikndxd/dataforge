@@ -1,0 +1,86 @@
+# DataForge V2 — full self-hosted stack.
+#
+# Minimal:   docker compose up api web            (SQLite + local FS + in-proc bus)
+# Full:      docker compose --profile full up     (Postgres/Redis/NATS/MinIO/Qdrant/Neo4j/Celery)
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.api
+    ports: ["8000:8000"]
+    environment:
+      DATAFORGE_SECRET_KEY: ${DATAFORGE_SECRET_KEY:-change-me-in-production}
+      DATAFORGE_DATABASE_URL: ${DATAFORGE_DATABASE_URL:-sqlite:////data/dataforge.db}
+      DATAFORGE_STORAGE_ROOT: /data/storage
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    volumes: ["dataforge-data:/data"]
+
+  web:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.web
+    ports: ["3100:3100"]
+    environment:
+      DATAFORGE_API_URL: http://api:8000
+    depends_on: [api]
+
+  worker:
+    profiles: ["full"]
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.api
+    command: celery -A backend.workers.celery_app worker -Q ingest.light,ai.embedding,export.small
+    environment:
+      DATAFORGE_DATABASE_URL: postgresql+psycopg://dataforge:dataforge@postgres/dataforge
+      DATAFORGE_CELERY_BROKER_URL: redis://redis:6379/0
+      DATAFORGE_STORAGE_BACKEND: s3
+      DATAFORGE_S3_ENDPOINT: http://minio:9000
+      DATAFORGE_S3_ACCESS_KEY: dataforge
+      DATAFORGE_S3_SECRET_KEY: dataforge-secret
+    depends_on: [postgres, redis, minio]
+
+  postgres:
+    profiles: ["full"]
+    image: postgres:16
+    environment:
+      POSTGRES_USER: dataforge
+      POSTGRES_PASSWORD: dataforge
+      POSTGRES_DB: dataforge
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+
+  redis:
+    profiles: ["full"]
+    image: redis:7
+
+  nats:
+    profiles: ["full"]
+    image: nats:latest
+    command: ["-js"]
+
+  minio:
+    profiles: ["full"]
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: dataforge
+      MINIO_ROOT_PASSWORD: dataforge-secret
+    volumes: ["minio-data:/data"]
+
+  qdrant:
+    profiles: ["full"]
+    image: qdrant/qdrant
+    volumes: ["qdrant-data:/qdrant/storage"]
+
+  neo4j:
+    profiles: ["full"]
+    image: neo4j:5
+    environment:
+      NEO4J_AUTH: neo4j/dataforge-secret
+    volumes: ["neo4j-data:/data"]
+
+volumes:
+  dataforge-data:
+  postgres-data:
+  minio-data:
+  qdrant-data:
+  neo4j-data:

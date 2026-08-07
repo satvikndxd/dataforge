@@ -1,0 +1,24 @@
+# DataForge V2 backend — minimal core (boots with zero external infrastructure)
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+pydantic-settings>=2.2
+sqlalchemy>=2.0
+httpx>=0.27
+email-validator>=2.1
+
+# --- optional production extras (uncomment as needed) ---
+# anthropic>=0.40           # LLM router (agents degrade gracefully without it)
+# celery[redis]>=5.3        # distributed workers
+# redis>=5.0                # cache / broker
+# nats-py>=2.7              # event streaming
+# boto3>=1.34               # S3/MinIO object storage
+# qdrant-client>=1.9        # vector database
+# neo4j>=5.20               # graph database
+# polars>=0.20              # parquet export + analytics
+# duckdb>=1.0               # analytical queries
+# trafilatura>=1.8          # high-quality article extraction
+# duckduckgo-search>=6.0    # web discovery provider
+# pypdf>=4.0                # PDF extraction
+# sentence-transformers     # neural embeddings
+# spacy>=3.7                # NER for knowledge graphs
