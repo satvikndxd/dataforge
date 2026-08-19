@@ -20,7 +20,7 @@ This repository contains **two generations** of the system:
 
 | Generation | Path | Description |
 |---|---|---|
-| **DataForge V2** (current) | [`dataforge/`](dataforge/) | Autonomous dataset supply chain: 19 governed agents, an 11-stage pipeline, 12-dimension quality scoring, 4-layer dedup, versioned datasets, plugins, SDKs, and a Bauhaus-style Next.js web app. Zero-infra by default (SQLite + local FS), scales to Postgres/Redis/NATS/S3/Qdrant/Neo4j via env vars alone. |
+| **DataForge V2** (current) | [`dataforge/`](dataforge/) | Autonomous dataset supply chain: 19 governed agents, an 11-stage pipeline, 12-dimension quality scoring, 4-layer dedup, versioned datasets, plugins, SDKs, and a Bauhaus-style Next.js web app. Zero-infra by default (SQLite + local FS), scales to Postgres/Redis/NATS/Qdrant/Neo4j plus cloud object storage (AWS S3, GCS, Azure Blob) and NoSQL stores (DynamoDB, MongoDB, Firestore, Cosmos DB) via env vars alone. |
 | **DataForge V1** (legacy) | [`backend/`](backend/) + [`frontend/`](frontend/) | The original FastAPI scraping engine + dark-mode Next.js UI. Modality-specific extraction (TF-IDF text curation, STT audio + spectrograms, image harvesting, NetworkX knowledge graphs) with ZIP export pipelines. |
 
 ---

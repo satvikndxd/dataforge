@@ -2,8 +2,10 @@
 
 Every external system is optional: DataForge boots with zero infrastructure
 (SQLite + local FS + in-memory bus/queue/vector/graph) and upgrades to
-Postgres/Redis/NATS/S3/Qdrant/Neo4j/Celery purely through environment
-variables. This keeps `docker compose up` and bare `uvicorn` both viable.
+Postgres/Redis/NATS/Qdrant/Neo4j/Celery, cloud object storage (AWS S3, GCS,
+Azure Blob), and NoSQL stores (DynamoDB, MongoDB, Firestore, Cosmos DB)
+purely through environment variables. This keeps `docker compose up` and
+bare `uvicorn` both viable.
 """
 from __future__ import annotations
 
@@ -38,12 +40,44 @@ class Settings(BaseSettings):
     nats_url: str | None = None
 
     # --- object storage ---
-    storage_backend: str = "local"  # local | s3
+    storage_backend: str = "local"  # local | s3 | gcs | azure
     storage_root: str = "./storage"
+    # AWS S3 / MinIO
     s3_endpoint: str | None = None
     s3_bucket: str = "dataforge"
+    s3_region: str | None = None
     s3_access_key: str | None = None
     s3_secret_key: str | None = None
+    # Google Cloud Storage
+    gcs_bucket: str = "dataforge"
+    gcs_project: str | None = None
+    gcs_credentials_file: str | None = None  # falls back to GOOGLE_APPLICATION_CREDENTIALS
+    # Azure Blob Storage
+    azure_container: str = "dataforge"
+    azure_connection_string: str | None = None
+    azure_account_url: str | None = None  # https://<account>.blob.core.windows.net
+    azure_account_key: str | None = None
+
+    # --- NoSQL document / key-value store (optional) ---
+    nosql_backend: str = "local"  # local | dynamodb | mongodb | firestore | cosmos
+    # AWS DynamoDB
+    dynamodb_table: str = "dataforge"
+    dynamodb_region: str | None = None
+    dynamodb_endpoint: str | None = None  # e.g. http://localhost:8000 for DynamoDB Local
+    dynamodb_access_key: str | None = None  # falls back to default AWS credential chain
+    dynamodb_secret_key: str | None = None
+    # MongoDB (or any wire-compatible NoSQL, e.g. DocumentDB / Cosmos Mongo API)
+    mongodb_url: str | None = None
+    mongodb_database: str = "dataforge"
+    # GCP Firestore
+    firestore_project: str | None = None
+    firestore_collection_prefix: str = "dataforge"
+    firestore_credentials_file: str | None = None
+    # Azure Cosmos DB (Core/SQL API)
+    cosmos_endpoint: str | None = None
+    cosmos_key: str | None = None
+    cosmos_database: str = "dataforge"
+    cosmos_container: str = "items"
 
     # --- vector / graph (optional) ---
     qdrant_url: str | None = None

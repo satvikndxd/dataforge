@@ -699,9 +699,16 @@ def install_plugin(body: PluginInstallBody,
 
 @router.get("/admin/health", tags=["admin"])
 def health():
+    from backend.core.config import get_settings
     from backend.intelligence.llm import get_llm_router
 
-    return {"status": "ok", "llm_online": get_llm_router().online}
+    settings = get_settings()
+    return {
+        "status": "ok",
+        "llm_online": get_llm_router().online,
+        "storage_backend": settings.storage_backend,
+        "nosql_backend": settings.nosql_backend,
+    }
 
 
 @router.get("/admin/metrics", tags=["admin"])
